@@ -15,27 +15,16 @@ zap_scan:
     - when: manual
       allow_failure: true
   script:
-    - echo "🔍 Checking target: $APP_URL"
-    - >
-      for i in {1..10}; do
-        if curl -sSf "$APP_URL" > /dev/null; then
-          echo "✅ Target is reachable"
-          break
-        fi
-        echo "⏳ Waiting... ($i/10)"
-        sleep 5
-        [ $i -eq 10 ] && echo "❌ Target unreachable" && exit 1
-      done
-    - echo "🚀 Starting ZAP scan..."
-    - mkdir -p /zap/wrk && ln -s "$CI_PROJECT_DIR" /zap/wrk
-    - zap-baseline.py -t "$APP_URL" -r zap-report.html -J zap-report.json -I
-    - cp /zap/wrk/zap-report.html "$CI_PROJECT_DIR/" || true
+    - echo "Checking if the target is reachable..."
+    - mkdir -p /zap/wrk
+    - ln -s "$CI_PROJECT_DIR" /zap/wrk
+    - echo "Starting ZAP baseline scan..."
+    - zap-baseline.py -t "$APP_URL" -J zap-report.json -I
     - cp /zap/wrk/zap-report.json "$CI_PROJECT_DIR/" || true
   tags:
     - docker
   artifacts:
     paths:
-      - zap-report.html
       - zap-report.json
     expire_in: 7 days
   allow_failure: true
