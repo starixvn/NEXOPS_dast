@@ -26,10 +26,8 @@ zap_scan:
         sleep 5
         [ $i -eq 10 ] && echo "❌ Target unreachable" && exit 1
       done
-    
     - echo "🚀 Starting ZAP scan..."
     - mkdir -p /zap/wrk && ln -s "$CI_PROJECT_DIR" /zap/wrk
-
     - zap-baseline.py -t "$APP_URL" -r zap-report.html -J zap-report.json -I
     - cp /zap/wrk/zap-report.html "$CI_PROJECT_DIR/" || true
     - cp /zap/wrk/zap-report.json "$CI_PROJECT_DIR/" || true
