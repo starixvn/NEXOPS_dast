@@ -16,7 +16,7 @@ zap_scan:
       allow_failure: true
   script:
     - echo "🔍 Checking target: $APP_URL"
-    - |
+    - >
       for i in {1..10}; do
         if curl -sSf "$APP_URL" > /dev/null; then
           echo "✅ Target is reachable"
