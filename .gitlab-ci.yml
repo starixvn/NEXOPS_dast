@@ -14,16 +14,14 @@ zap_scan:
     - mkdir -p /zap/wrk
     - ln -s "$CI_PROJECT_DIR" /zap/wrk
     - echo "Starting ZAP baseline scan..."
-    - zap-baseline.py -t "$APP_URL" -x zap-report.xml -J zap-report.json -I
+    - zap-baseline.py -t "$APP_URL" -x zap-report.xml -I
     - cp /zap/wrk/zap-report.xml "$CI_PROJECT_DIR/" || true
-    - cp /zap/wrk/zap-report.json "$CI_PROJECT_DIR/" || true
+  tags:
+    - docker
   artifacts:
     paths:
       - zap-report.xml
-      - zap-report.json
     expire_in: 7 days
-  tags:
-    - docker
   allow_failure: true
 
 upload_to_defectdojo:
@@ -134,6 +132,7 @@ upload_to_defectdojo:
         echo "✅ Engagement '${ENGAGEMENT_NAME}' found with ID: ${ENGAGEMENT_ID}"
       else
         echo "📝 Engagement '${ENGAGEMENT_NAME}' not found, creating..."
+
         TARGET_START=$(date +%Y-%m-%d)
         TARGET_END=$(date -d "$(date) + ${DEFECTDOJO_ENGAGEMENT_PERIOD:-30} days" +%Y-%m-%d 2>/dev/null || date -v+${DEFECTDOJO_ENGAGEMENT_PERIOD:-30}d +%Y-%m-%d 2>/dev/null || python3 -c "import datetime; print((datetime.datetime.now() + datetime.timedelta(days=${DEFECTDOJO_ENGAGEMENT_PERIOD:-30})).strftime('%Y-%m-%d'))")
         
