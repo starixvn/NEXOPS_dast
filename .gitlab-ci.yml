@@ -8,6 +8,7 @@ stages:
 zap_scan:
   stage: security
   image: $DOCKER_REG_LOCAL_URL/docker-hub/zaproxy/zap-stable:2.16.1
+
   script:
     - echo "Checking if the target is reachable..."
     - mkdir -p /zap/wrk
@@ -131,6 +132,9 @@ upload_to_defectdojo:
         echo "✅ Engagement '${ENGAGEMENT_NAME}' found with ID: ${ENGAGEMENT_ID}"
       else
         echo "📝 Engagement '${ENGAGEMENT_NAME}' not found, creating..."
+        TARGET_START=$(date +%Y-%m-%d)
+        TARGET_END=$(date -d "$(date) + ${DEFECTDOJO_ENGAGEMENT_PERIOD:-30} days" +%Y-%m-%d 2>/dev/null || date -v+${DEFECTDOJO_ENGAGEMENT_PERIOD:-30}d +%Y-%m-%d 2>/dev/null || python3 -c "import datetime; print((datetime.datetime.now() + datetime.timedelta(days=${DEFECTDOJO_ENGAGEMENT_PERIOD:-30})).strftime('%Y-%m-%d'))")
+        
         ENGAGEMENT_JSON=$(jq -n \
           --arg name "$ENGAGEMENT_NAME" \
           --argjson product "$PRODUCT_ID" \
@@ -140,8 +144,8 @@ upload_to_defectdojo:
           --argjson api_test "${DEFECTDOJO_ENGAGEMENT_API_TEST}" \
           --argjson pen_test "${DEFECTDOJO_ENGAGEMENT_PEN_TEST}" \
           --argjson check_list "${DEFECTDOJO_ENGAGEMENT_CHECK_LIST}" \
-          --arg target_start "$(date +%F)" \
-          --arg target_end "$(date -d "+${DEFECTDOJO_ENGAGEMENT_PERIOD} days" +%Y-%m-%d)" \
+          --arg target_start "$TARGET_START" \
+          --arg target_end "$TARGET_END" \
           --arg status "${DEFECTDOJO_ENGAGEMENT_STATUS}" \
           '{name: $name, product: $product, engagement_type: $engagement_type, target_start: $target_start, target_end: $target_end, status: $status, deduplication_on_engagement: $deduplication_on_engagement, threat_model: $threat_model, api_test: $api_test, pen_test: $pen_test, check_list: $check_list}')
         echo "DEBUG: Engagement JSON payload: $ENGAGEMENT_JSON"
