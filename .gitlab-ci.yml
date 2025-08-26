@@ -199,6 +199,7 @@ upload_to_defectdojo:
           '.results[] | select(.title==$test_title) | .id')
         curl -S -X POST "${DEFECTDOJO_URL}/api/v2/reimport-scan/" \
           -H "Authorization: Token ${DEFECTDOJO_API_KEY}" \
+          -F "minimum_severity=${DEFECTDOJO_SCAN_MINIMUM_SEVERITY}" \
           -F "scan_type=${DEFECTDOJO_SCAN_TYPE}" \
           -F "active=${DEFECTDOJO_SCAN_ACTIVE}" \
           -F "verified=${DEFECTDOJO_SCAN_VERIFIED}" \
