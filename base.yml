@@ -2,7 +2,7 @@ variables:
   # DefectDojo Configuration
   DEFECTDOJO_PRODUCT_NAME: "${CI_PROJECT_NAME}-${DEFECTDOJO_DEPT}"
   DEFECTDOJO_DEPT: "Atomix"
-  ENGAGEMENT_NAME: "DAST Security Scan"
+  ENGAGEMENT_NAME: "DASTSecurityScan"
   DEFECTDOJO_SCAN_FILE: "zap-report.json"
   DEFECTDOJO_SCAN_TYPE: "ZAP Scan"
   DEFECTDOJO_SCAN_TEST_TYPE: "ZAP Scan"
