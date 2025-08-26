@@ -8,13 +8,18 @@ stages:
 zap_scan:
   stage: security
   image: $DOCKER_REG_LOCAL_URL/docker-hub/zaproxy/zap-stable:2.16.1
-
   script:
     - echo "Checking if the target is reachable..."
     - mkdir -p /zap/wrk
     - ln -s "$CI_PROJECT_DIR" /zap/wrk
-    - echo "Starting ZAP baseline scan..."
-    - zap-baseline.py -t "$APP_URL" -x zap-report.xml -I
+    - |
+      if [ "$ZAP_FULL_SCAN_ENABLED" = "true" ]; then
+        echo "Starting ZAP FULL scan..."
+        zap-full-scan.py -t "$APP_URL" -x zap-report.xml -I
+      else
+        echo "Starting ZAP baseline scan..."
+        zap-baseline.py -t "$APP_URL" -x zap-report.xml -I
+      fi
     - cp /zap/wrk/zap-report.xml "$CI_PROJECT_DIR/" || true
   tags:
     - docker
