@@ -8,10 +8,6 @@ stages:
 zap_scan:
   stage: security
   image: $DOCKER_REG_LOCAL_URL/docker-hub/zaproxy/zap-stable:2.16.1
-  rules:
-    - changes:
-        - base.yml
-      when: always
   script:
     - echo "Checking if the target is reachable..."
     - mkdir -p /zap/wrk
