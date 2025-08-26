@@ -12,8 +12,6 @@ zap_scan:
     - changes:
         - base.yml
       when: always
-    - when: manual
-      allow_failure: true
   script:
     - echo "Checking if the target is reachable..."
     - mkdir -p /zap/wrk
