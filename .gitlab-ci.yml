@@ -7,7 +7,7 @@ stages:
 
 zap_scan:
   stage: security
-  image: zaproxy/zap-stable
+  image: $DOCKER_REG_LOCAL_URL/docker-hub/zaproxy/zap-stable:2.16.1
   rules:
     - changes:
         - base.yml
