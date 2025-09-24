@@ -35,7 +35,6 @@ zap_scan:
   artifacts:
     paths:
       - zap-report.xml
-    expire_in: 7 days
   allow_failure: true
 
 upload_to_defectdojo:
